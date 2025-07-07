@@ -67,6 +67,7 @@ struct _tree{
 	void build(int x,int y,ll *a,tree **cntt){
 		l=x;
 		r=y;
+		t=0;
 		if(x==y){
 			v=a[x];
 			return;
