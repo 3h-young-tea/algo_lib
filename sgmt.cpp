@@ -23,7 +23,7 @@
 typedef struct _tree tree;
 
 struct _tree{
-	_tree *ls,*rs;
+	tree *ls,*rs;
 	int l,r;
 	ll v,t;
 	_Bool in_rng(int x,int y){
