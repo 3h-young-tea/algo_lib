@@ -64,7 +64,7 @@ struct _tree{
 			s+=rs->query(x,y);
 		}	return s;
 	}
-	void build(int x,int y,ll *a,tree **cntt){
+	void build(int x,int y,ll *a){
 		l=x;
 		r=y;
 		t=0;
@@ -72,25 +72,35 @@ struct _tree{
 			v=a[x];
 			return;
 		}	int z=x+y>>1;
-		ls=(cntt!=NULL)?++*cntt:(tree*)malloc(sizeof(tree));
-		ls->build(x,z,a,cntt);
-		rs=(cntt!=NULL)?++*cntt:(tree*)malloc(sizeof(tree));
-		rs->build(z+1,y,a,cntt);
+		ls=(tree*)malloc(sizeof(tree));
+		ls->build(x,z,a);
+		rs=(tree*)malloc(sizeof(tree));
+		rs->build(z+1,y,a);
 		push_up();
+	}
+	void squib(){
+		if(l==r){
+			return;
+		}	ls->squib();
+		rs->squib();
+		free(ls);
+		free(rs);
+		ls=rs=NULL;
 	}
 };
 
 int n,q;
 ll a[N];
-tree tr[N<<2],*cntt=tr,*rt=tr;
+tree *rt;
 
 signed main(){
 	int x,y;
 	ll z;
 	scanf(" %d %d",&n,&q);
+	rt=(tree*)malloc(sizeof(tree));
 	for(int i=1;i<=n;i++){
 		scanf(" %lld",a+i);
-	}	rt->build(1,n,a,&cntt);
+	}	rt->build(1,n,a);
 	while(q--){
 		scanf(" %d",&x);
 		if(x==1){
@@ -102,5 +112,8 @@ signed main(){
 		}else{
 			puts("~");
 		}
-	}	return 0;
+	}	rt->squib();
+	free(rt);
+	rt=NULL;
+	return 0;
 }
