@@ -82,19 +82,16 @@ ll cmp(void *x,void *y){
 	return (*(ll*)(x)>*(ll*)(y))-(*(ll*)(x)<*(ll*)(y));
 }
 
-ull t,n,v;
+ull n,v;
 ll a[N],b[N];
 
 signed main(){
-	scanf(" %llu",&t);
-	while(t--){
-		scanf(" %llu",&n);
-		for(ull i=1;i<=n;i++){
-			scanf(" %lld",a+i);
-			b[i]=a[i];
-		}	v=v2rk(a+1,b+1,n,cmp,1);
-		for(ull i=1;i<=n;i++){
-			printf("%lld%c",a[i],cend(n));
-		}
+	scanf(" %llu",&n);
+	for(ull i=1;i<=n;i++){
+		scanf(" %lld",a+i);
+		b[i]=a[i];
+	}	v=v2rk(a+1,b+1,n,cmp,1);
+	for(ull i=1;i<=n;i++){
+		printf("%lld%c",a[i],cend(n));
 	}	return 0;
 }
