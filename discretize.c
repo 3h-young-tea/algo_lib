@@ -16,120 +16,85 @@
 #define Inf 0x3f3f3f3f3f3f3f3fll
 #define Mod 0x3b800001
 #define N (1<<18)
-#define M (1<<19)
-#define SqN (1<<9)
-#define LgN (21)
 
-typedef struct _tree tree;
-
-struct _tree{
-	tree *ls,*rs;
-	int l,r;
-	ll v,t;
-	_Bool in_rng(int,int);
-	void upd(ll);
-	void push_up();
-	void push_down();
-	void update(int,int,ll);
-	ll query(int,int);
-	void build(int,int,ll*);
-	void squib();
-};
-
-_Bool tree::in_rng(int x,int y){
-	return x<=l&&r<=y;
-}
-
-void tree::upd(ll k){
-	t+=k;
-	v+=k*(r-l+1);
-}
-
-void tree::push_up(){
-	v=ls->v+rs->v;
-}
-
-void tree::push_down(){
-	if(t==0){
+void vsort(void *a,ull len,ull sz,ll (*cmp)(void*,void*)){
+	char *p=(char*)(a);
+	char *x,*y,*z,*f,*g,*h;
+	char *tmp=(char*)malloc(len*sz);
+	if(tmp==NULL){
 		return;
-	}	ls->upd(t);
-	rs->upd(t);
-	t=0;
+	}	for(ull w=1;w<len;w<<=1)
+	for(ull i=0;i<len;i+=w<<1){
+		f=p+i*sz;
+		g=p+cmin(i+w,len)*sz;
+		h=p+cmin(i+(w<<1),len)*sz;
+		x=f;
+		y=g;
+		z=tmp;
+		while(x<g&&y<h){
+			if(cmp(x,y)<=0){
+				memcpy(z,x,sz);
+				x+=sz;
+			}else{
+				memcpy(z,y,sz);
+				y+=sz;
+			}	z+=sz;
+		}	while(x<g){
+			memcpy(z,x,sz);
+			x+=sz;
+			z+=sz;
+		}	while(y<h){
+			memcpy(z,y,sz);
+			y+=sz;
+			z+=sz;
+		}	memcpy(f,tmp,h-f);
+	}	free(tmp);
 }
 
-void tree::update(int x,int y,ll k){
-	if(in_rng(x,y)){
-		return upd(k);
-	}	push_down();
-	if(x<=ls->r){
-		ls->update(x,y,k);
-	}	if(rs->l<=y){
-		rs->update(x,y,k);
-	}	push_up();
+void* bquery(void *k,void *a,ull len,ull sz,ll (*cmp)(void*,void*)){
+	ull x=0,y=len,z;
+	char *p=(char*)(a);
+	while(x<y){
+		z=x+y>>1;
+		if(cmp(k,p+z*sz)<=0){
+			y=z;
+		}else{
+			x=z+1;
+		}
+	}	return x<len?p+x*sz:NULL;
 }
 
-ll tree::query(int x,int y){
-	if(in_rng(x,y)){
-		return v;
-	}	push_down();
-	ll s=0;
-	if(x<=ls->r){
-		s+=ls->query(x,y);
-	}	if(rs->l<=y){
-		s+=rs->query(x,y);
-	}	return s;
+ull v2rk(ll *a,ll *b,ull len,ll (*cmp)(void*,void*),_Bool jqk){
+	ll *val=b;
+	if(jqk==0){
+		memcpy(b,a,len*sizeof(ll));
+	}	vsort(b,len,sizeof(ll),cmp);
+	for(ull i=1;i<len;i++){
+		if(b[i]!=b[i-1]){
+			*++val=b[i];
+		}
+	}	for(ull i=0;i<len;i++){
+		a[i]=(ll*)bquery(a+i,b,val-b+1,sizeof(ll),cmp)-b+1;
+	}	return val-b+1;
 }
 
-void tree::build(int x,int y,ll *a){
-	l=x;
-	r=y;
-	t=0;
-	if(x==y){
-		v=a[x];
-		return;
-	}	int z=x+y>>1;
-	ls=(tree*)malloc(sizeof(tree));
-	ls->build(x,z,a);
-	rs=(tree*)malloc(sizeof(tree));
-	rs->build(z+1,y,a);
-	push_up();
+ll cmp(void *x,void *y){
+	return (*(ll*)(x)>*(ll*)(y))-(*(ll*)(x)<*(ll*)(y));
 }
 
-void tree::squib(){
-	if(l==r){
-		return;
-	}	ls->squib();
-	rs->squib();
-	free(ls);
-	free(rs);
-	ls=rs=NULL;
-}
-
-int n,q;
-ll a[N];
-tree *rt;
+ull t,n,v;
+ll a[N],b[N];
 
 signed main(){
-	int x,y;
-	ll z;
-	scanf(" %d %d",&n,&q);
-	rt=(tree*)malloc(sizeof(tree));
-	for(int i=1;i<=n;i++){
-		scanf(" %lld",a+i);
-	}	rt->build(1,n,a);
-	while(q--){
-		scanf(" %d",&x);
-		if(x==1){
-			scanf(" %d %d %lld",&x,&y,&z);
-			rt->update(x,y,z);
-		}else if(x==2){
-			scanf(" %d %d",&x,&y);
-			printf("%lld\n",rt->query(x,y));
-		}else{
-			puts("~");
+	scanf(" %llu",&t);
+	while(t--){
+		scanf(" %llu",&n);
+		for(ull i=1;i<=n;i++){
+			scanf(" %lld",a+i);
+			b[i]=a[i];
+		}	v=v2rk(a+1,b+1,n,cmp,1);
+		for(ull i=1;i<=n;i++){
+			printf("%lld%c",a[i],cend(n));
 		}
-	}	rt->squib();
-	free(rt);
-	rt=NULL;
-	return 0;
+	}	return 0;
 }
