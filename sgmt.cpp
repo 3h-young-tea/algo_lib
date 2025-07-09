@@ -121,10 +121,10 @@ signed main(){
 		scanf(" %d",&x);
 		if(x==1){
 			scanf(" %d %d %lld",&x,&y,&z);
-			rt->update(x,y,z);
+			rt->update(cmin(x,y),cmax(x,y),z);
 		}else if(x==2){
 			scanf(" %d %d",&x,&y);
-			printf("%lld\n",rt->query(x,y));
+			printf("%lld\n",rt->query(cmin(x,y),cmax(x,y)));
 		}else{
 			puts("~");
 		}
