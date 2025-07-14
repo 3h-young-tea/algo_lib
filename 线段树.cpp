@@ -83,14 +83,13 @@ ll tree::query(int x,int y){
 void tree::build(int x,int y,ll *a){
 	l=x;
 	r=y;
-	t=0;
 	if(x==y){
 		v=a[x];
 		return;
 	}	int z=x+y>>1;
-	ls=(tree*)malloc(sizeof(tree));
+	ls=(tree*)calloc(1,sizeof(tree));
 	ls->build(x,z,a);
-	rs=(tree*)malloc(sizeof(tree));
+	rs=(tree*)calloc(1,sizeof(tree));
 	rs->build(z+1,y,a);
 	push_up();
 }
