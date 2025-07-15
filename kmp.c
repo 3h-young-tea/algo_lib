@@ -48,7 +48,7 @@ void kmp(char *s,char *p){
 		}
 	}	for(int i=0;i<plen;i++){
 		printf("%lld%c",pi[i],endl(plen-1));
-	}
+	}	free(pi),pi=NULL;
 }
 
 char s[N],p[N];
